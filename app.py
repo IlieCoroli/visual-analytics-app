@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
-
+import plotly, kaleido, streamlit as st
+st.write("Plotly:", plotly.__version__)
+st.write("Kaleido:", kaleido.__version__)
 from app.controller.app_controller import AppController
 from app.utils.validators import ensure_dataframe_loaded, numeric_columns, all_columns
 
