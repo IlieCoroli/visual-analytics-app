@@ -17,6 +17,9 @@ class AppController:
         self.viz = VisualisationEngine()
         self.persist = PersistenceManager()
 
+        # ✅ IMPORTANT: create export manager
+        self.export_manager = ExportManager()
+
     # -------------------------
     # Dataset loading / metadata
     # -------------------------
@@ -116,18 +119,17 @@ class AppController:
     def export_csv_bytes(self) -> bytes:
         if self.df is None:
             return b""
-        return ExportManager.dataframe_to_csv_bytes(self.df)
+        return self.export_manager.dataframe_to_csv_bytes(self.df)
 
     def export_last_chart_png_bytes(self) -> bytes:
-    if self.last_figure is None:
-        raise ValueError("No chart generated yet. Create a chart in Visualise first.")
-    return self.export_manager.fig_png_bytes(self.last_figure, scale=2)
+        if self.last_figure is None:
+            raise ValueError("No chart generated yet. Create a chart in Visualise first.")
+        return self.export_manager.fig_png_bytes(self.last_figure, scale=2)
 
-
-def export_last_chart_svg_bytes(self) -> bytes:
-    if self.last_figure is None:
-        raise ValueError("No chart generated yet. Create a chart in Visualise first.")
-    return self.export_manager.fig_svg_bytes(self.last_figure)
+    def export_last_chart_svg_bytes(self) -> bytes:
+        if self.last_figure is None:
+            raise ValueError("No chart generated yet. Create a chart in Visualise first.")
+        return self.export_manager.fig_svg_bytes(self.last_figure)
 
     # -------------------------
     # Snapshots (optional)
