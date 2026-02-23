@@ -1,10 +1,10 @@
 import pandas as pd
 import plotly.express as px
 
-from app.services.export_manager import ExportManager
-from app.services.transformation_engine import TransformationEngine
-from app.services.visualisation_engine import VisualisationEngine
-from app.services.persistence_manager import PersistenceManager
+from services.export_manager import ExportManager
+from services.transformation_engine import TransformationEngine
+from services.visualisation_engine import VisualisationEngine
+from services.persistence_manager import PersistenceManager
 
 
 class AppController:
