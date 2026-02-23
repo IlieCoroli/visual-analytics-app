@@ -1,20 +1,29 @@
-from __future__ import annotations
-import io
 import pandas as pd
 import plotly.io as pio
 
-class ExportManager:
-    @staticmethod
-    def figure_to_png_bytes(fig, scale: int = 2) -> bytes:
-        # Works with kaleido==0.2.1 (no system Chrome required)
-        return pio.to_image(fig, format="png", scale=scale)
 
 class ExportManager:
-    def csv_bytes(self, df: pd.DataFrame) -> bytes:
+    """
+    Handles exporting datasets and figures into downloadable bytes.
+    Uses plotly.io.to_image which works with kaleido==0.2.1 without system Chrome.
+    """
+
+    @staticmethod
+    def dataframe_to_csv_bytes(df: pd.DataFrame) -> bytes:
+        if df is None or df.empty:
+            return b""
         return df.to_csv(index=False).encode("utf-8")
 
-    def fig_png_bytes(self, fig) -> bytes:
-        # Plotly uses kaleido for static image export
-        buf = io.BytesIO()
-        fig.write_image(buf, format="png")
-        return buf.getvalue()
+    @staticmethod
+    def figure_to_png_bytes(fig, scale: int = 2) -> bytes:
+        if fig is None:
+            raise ValueError("No figure provided for export.")
+        # PNG bytes using Kaleido
+        return pio.to_image(fig, format="png", scale=scale)
+
+    @staticmethod
+    def figure_to_svg_bytes(fig) -> bytes:
+        if fig is None:
+            raise ValueError("No figure provided for export.")
+        # SVG is a good fallback (often works even when PNG fails)
+        return pio.to_image(fig, format="svg")
