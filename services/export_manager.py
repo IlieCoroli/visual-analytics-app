@@ -1,6 +1,13 @@
 from __future__ import annotations
 import io
 import pandas as pd
+import plotly.io as pio
+
+class ExportManager:
+    @staticmethod
+    def figure_to_png_bytes(fig, scale: int = 2) -> bytes:
+        # Works with kaleido==0.2.1 (no system Chrome required)
+        return pio.to_image(fig, format="png", scale=scale)
 
 class ExportManager:
     def csv_bytes(self, df: pd.DataFrame) -> bytes:
