@@ -3,27 +3,24 @@ import plotly.io as pio
 
 
 class ExportManager:
-    """
-    Handles exporting datasets and figures into downloadable bytes.
-    Uses plotly.io.to_image which works with kaleido==0.2.1 without system Chrome.
-    """
+    """Exports datasets and charts as bytes for Streamlit download buttons."""
 
-    @staticmethod
-    def dataframe_to_csv_bytes(df: pd.DataFrame) -> bytes:
+    def csv_bytes(self, df: pd.DataFrame) -> bytes:
         if df is None or df.empty:
             return b""
         return df.to_csv(index=False).encode("utf-8")
 
-    @staticmethod
-    def figure_to_png_bytes(fig, scale: int = 2) -> bytes:
+    def fig_png_bytes(self, fig, scale: int = 2) -> bytes:
+        """
+        Export Plotly figure to PNG bytes.
+        Works with: plotly==5.24.1 + kaleido==0.2.1 (no system Chrome required).
+        """
         if fig is None:
-            raise ValueError("No figure provided for export.")
-        # PNG bytes using Kaleido
+            raise ValueError("No figure provided.")
         return pio.to_image(fig, format="png", scale=scale)
 
-    @staticmethod
-    def figure_to_svg_bytes(fig) -> bytes:
+    def fig_svg_bytes(self, fig) -> bytes:
+        """SVG fallback export (useful if PNG ever fails)."""
         if fig is None:
-            raise ValueError("No figure provided for export.")
-        # SVG is a good fallback (often works even when PNG fails)
+            raise ValueError("No figure provided.")
         return pio.to_image(fig, format="svg")
