@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from app.controller.app_controller import AppController
+from controller.app_controller import AppController
 from app.utils.validators import ensure_dataframe_loaded, numeric_columns, all_columns
 
 st.set_page_config(page_title="CS6P05 Visual Analytics", layout="wide")
