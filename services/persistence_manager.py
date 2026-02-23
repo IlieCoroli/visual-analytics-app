@@ -6,7 +6,7 @@ import pandas as pd
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
-from app.db.schema import Base, Dataset, ColumnProfile, TransformationLog
+from db.schema import Base, Dataset, ColumnProfile, TransformationLog
 
 @dataclass
 class SnapshotInfo:
