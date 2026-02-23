@@ -10,14 +10,12 @@ controller = AppController()
 
 st.title("Interactive Data Visualisation & Analytics (Prototype)")
 
-# Sidebar navigation (task-based)
 page = st.sidebar.radio(
     "Navigation",
     ["Import Data", "Profile", "Clean & Transform", "Visualise", "Export", "Saved Snapshots"],
     index=0
 )
 
-# Shared state display
 with st.sidebar.expander("Current dataset", expanded=False):
     meta = controller.get_active_metadata()
     if meta:
@@ -78,7 +76,10 @@ elif page == "Clean & Transform":
 
     with tab_clean:
         st.subheader("Handle missing values")
-        strategy = st.selectbox("Strategy", ["Drop rows with missing", "Fill missing (mean)", "Fill missing (median)", "Fill missing (0)", "Fill missing (custom)"])
+        strategy = st.selectbox(
+            "Strategy",
+            ["Drop rows with missing", "Fill missing (mean)", "Fill missing (median)", "Fill missing (0)", "Fill missing (custom)"]
+        )
         custom_val = None
         if strategy == "Fill missing (custom)":
             custom_val = st.text_input("Custom fill value (applies to all columns where possible)", value="0")
@@ -173,22 +174,31 @@ elif page == "Export":
 
     st.subheader("Export cleaned/transformed dataset")
     export_name = st.text_input("CSV filename", value="cleaned_dataset.csv")
-    if st.button("Download CSV"):
-        csv_bytes = controller.export_csv_bytes()
-        st.download_button("Click to download", data=csv_bytes, file_name=export_name, mime="text/csv")
+    csv_bytes = controller.export_csv_bytes()
+    st.download_button("Download CSV", data=csv_bytes, file_name=export_name, mime="text/csv")
 
     st.divider()
-    st.subheader("Export last chart (PNG)")
+    st.subheader("Export last chart")
+
     if controller.last_figure is None:
         st.info("No chart generated yet. Go to Visualise and create a chart first.")
     else:
-        fig_name = st.text_input("Chart filename", value="chart.png")
-        if st.button("Generate PNG"):
+        colA, colB = st.columns(2)
+
+        with colA:
+            fig_name = st.text_input("PNG filename", value="chart.png")
             try:
                 png_bytes = controller.export_last_chart_png_bytes()
-                st.download_button("Click to download chart", data=png_bytes, file_name=fig_name, mime="image/png")
+                st.download_button("Download PNG", data=png_bytes, file_name=fig_name, mime="image/png")
             except Exception as e:
-                st.error(f"Chart export failed: {e}")
+                st.error(f"PNG export failed: {e}")
+
+        with colB:
+            try:
+                svg_bytes = controller.export_last_chart_svg_bytes()
+                st.download_button("Download SVG", data=svg_bytes, file_name="chart.svg", mime="image/svg+xml")
+            except Exception as e:
+                st.error(f"SVG export failed: {e}")
 
 elif page == "Saved Snapshots":
     st.header("Saved Snapshots")
